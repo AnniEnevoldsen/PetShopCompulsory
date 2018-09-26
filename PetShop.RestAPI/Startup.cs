@@ -36,7 +36,6 @@ namespace PetShop.RestAPI
 
        // public IConfiguration Configuration { get; }
 
-
         public Startup(IHostingEnvironment env)
         {
             _env = env;
@@ -47,8 +46,6 @@ namespace PetShop.RestAPI
                 .AddEnvironmentVariables();
             _conf = builder.Build();
         }
-
-
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -84,7 +81,6 @@ namespace PetShop.RestAPI
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

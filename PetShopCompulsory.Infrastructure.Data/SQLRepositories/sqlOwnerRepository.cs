@@ -19,10 +19,6 @@ namespace PetShopCompulsory.Infrastructure.Data.SQLRepositories
 
         public Owner AddOwnerData(Owner owner)
         {
-            //var newOwner = _ctx.Add(owner).Entity;
-            //_ctx.SaveChanges();
-            //return newOwner;
-
             _ctx.Attach(owner).State = EntityState.Added;
             _ctx.SaveChanges();
             return owner;
@@ -34,6 +30,7 @@ namespace PetShopCompulsory.Infrastructure.Data.SQLRepositories
             _ctx.SaveChanges();
 
             return ownerToRemove;
+ 
         }
 
         public Owner EditOwnerData(Owner owner)

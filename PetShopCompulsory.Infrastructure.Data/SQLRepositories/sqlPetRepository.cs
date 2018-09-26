@@ -48,13 +48,14 @@ namespace PetShopCompulsory.Infrastructure.Data.SQLRepositories
 
         public Pet ReadPetById(int id)
         {
-            return _ctx.Pets.FirstOrDefault(p => p.Id == id);
+            return _ctx.Pets.Include(p => p.PreviousOwner).FirstOrDefault(p => p.Id == id);
         }
 
         public IEnumerable<Pet> ReadPets(Filter filter)
         {
            // if (filter == null)
           //  { 
+
                 return _ctx.Pets;
           //  }
           //  return _ctx.Pets.Skip((filter.CurrentPage - 1) * filter.ItemsPrPage).Take(filter.ItemsPrPage);
