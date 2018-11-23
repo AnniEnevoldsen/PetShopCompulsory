@@ -40,7 +40,6 @@ namespace PetShop.RestAPI.Controllers
         }
 
         // GET api/values/5 ---Read by ID
-        [Authorize]
         [HttpGet("{id}")]
         public ActionResult<Pet> Get(int id)
         {
