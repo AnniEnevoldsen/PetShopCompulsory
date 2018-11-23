@@ -17,22 +17,23 @@ namespace PetShopCompulsory.Infrastructure.Data.SQLRepositories
             _ctx = ctx;
         }
 
-        public void Add(User user)
+        public User Add(User user)
         {
             _ctx.Add(user);
             _ctx.SaveChanges();
+            return user;
         }
 
-        public void Edit(User user)
+        public User Edit(User user)
         {
             _ctx.Entry(user).State = EntityState.Modified;
             _ctx.SaveChanges();
+            return user;
         }
 
-        public User Get(long id)
+        public User Get(int id)
         {
-            return _ctx.Users.FirstOrDefault(u => u.Id == id);
-            
+            return _ctx.Users.FirstOrDefault(u => u.Id == id);  
         }
 
         public IEnumerable<User> GetAll()
@@ -40,11 +41,12 @@ namespace PetShopCompulsory.Infrastructure.Data.SQLRepositories
             return _ctx.Users.ToList();
         }
 
-        public void Remove(long id)
+        public int Remove(int id)
         {
             var item = _ctx.Users.FirstOrDefault(b => b.Id == id);
             _ctx.Users.Remove(item);
             _ctx.SaveChanges();
+            return id;
         }
     }
 }

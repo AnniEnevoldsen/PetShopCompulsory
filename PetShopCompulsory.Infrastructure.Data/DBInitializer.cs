@@ -57,12 +57,12 @@ namespace PetShopCompulsory.Infrastructure.Data
                 IsAdmin = false
             });
 
-            string password2 = "adminPass";
+            string password2 = "admin";
             byte[] passwordHash2, passwordSalt2;
             CreatePasswordHash(password2, out passwordHash2, out passwordSalt2);
             ctx.Users.Add(new User()
             {
-                Username = "username2",
+                Username = "user",
                 PasswordHash = passwordHash2,
                 PasswordSalt = passwordSalt2,
                 IsAdmin = true

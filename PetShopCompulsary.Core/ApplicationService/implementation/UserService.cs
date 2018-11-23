@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using PetShopCompulsory.Core.DomainService;
 using PetShopCompulsory.Core.Entities;
@@ -15,29 +16,29 @@ namespace PetShopCompulsory.Core.ApplicationService.implementation
           
         }
 
-        public void Add(User user)
+        public User Add(User user)
         {
-            _userRepository.Add(user);
+            return _userRepository.Add(user);
         }
 
-        public void Edit(User user)
+        public User Edit(User user)
         {
-            _userRepository.Edit(user);
+            return _userRepository.Edit(user);
         }
 
-        public User Get(long id)
+        public User Get(int id)
         {
             return _userRepository.Get(id);
         }
 
-        public IEnumerable<User> GetAll()
+        public List<User> GetAll()
         {
-            return _userRepository.GetAll();
+            return _userRepository.GetAll().ToList();
         }
 
-        public void Remove(long id)
+        public int Remove(int id)
         {
-            _userRepository.Remove(id);
+            return _userRepository.Remove(id);
         }
     }
 }

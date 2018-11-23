@@ -22,7 +22,7 @@ namespace PetShop.RestAPI.Controllers
 
         // GET: api/PetOwner
         [HttpGet]
-        public IEnumerable<Owner> Get()
+        public ActionResult<IEnumerable<Owner>> Get()
         {
             return _ownerService.GetOwners();
         }
