@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using PetShop.RestAPI.Helpers;
 using PetShopCompulsory.Core.ApplicationService;
 using PetShopCompulsory.Core.ApplicationService.implementation;
 using PetShopCompulsory.Core.DomainService;
-using PetShopCompulsory.Core.Entities;
 using PetShopCompulsory.Core.ServiceFolder;
 using PetShopCompulsory.Core.ServiceFolder.implementation;
 using PetShopCompulsory.Infrastructure.Data;
@@ -45,11 +42,36 @@ namespace PetShop.RestAPI
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             _conf = builder.Build();
+
+            //needs to be implemented when class is implemented
+            JwtSecurityKey.SetSecret("a secret that needs to be at least 16 characters long");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //add cors
+            services.AddCors();
+
+            //Add JWT based authentication
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                        ValidAudience = "https://localhost:24885:",
+                        //if using external authentication provider (eg fb) ValidAudience = "Facebook.com"
+                        ValidateIssuer = false, //also need this to be set to the above if using that
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = JwtSecurityKey.Key, //need to implement class JwtSecurityKey
+                        ValidateLifetime = true, //validate expiration and not before values in token
+                        ClockSkew = TimeSpan.FromMinutes(10) //10 min tolerance for expiration date?
+                    };
+                });
+
+            
+
             if (_env.IsDevelopment())
             {
                 services.AddDbContext<PetShopAppContext>(
@@ -72,6 +94,9 @@ namespace PetShop.RestAPI
 
             services.AddScoped<IOwnerRepository, sqlOwnerRepository>();
             services.AddScoped<IOwnerService, OwnerService>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
 
             //below is so we don't get a never ending loop(might not be relevant)
             services.AddMvc().AddJsonOptions(options =>
@@ -104,6 +129,16 @@ namespace PetShop.RestAPI
                 }
                 app.UseHsts();
             }
+
+            app.UseHttpsRedirection(); // fra henrik, trying to turn off
+
+            //cors must precede usemvc(), app.UseCors();
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            //add_header 'Access-Control-Allow-Origin' 'http://localhost:4200' always;
+
+            //use authentication 
+            app.UseAuthentication();
+
             app.UseMvc();
         }
     }
